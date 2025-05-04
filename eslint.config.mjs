@@ -26,6 +26,7 @@ export default tseslint.config(
   },
   {
     rules: {
+      'experimentalDecorators': 'off',
       'prettier/prettier': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
