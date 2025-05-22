@@ -1,56 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './schemas/user.schema';
 import { UserDto } from './dto/user-dto';
 
 @Injectable()
 export class UsersService {
+  private _users: UserDto[];
 
-    private _users: UserDto[];
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
-    constructor() {
-        this._users = [];
+  async createUser(user: UserDto) {
+    const existingUser = await this.userModel.findOne({ email: user.email });
+
+    if (existingUser) {
+      throw new ConflictException(
+        `El usuario con email ${user.email} ya existe`,
+      );
     }
 
-    createUser(user: UserDto) {
-        const userFound = this._users.find(u => u.id == user.id);
+    const createdUser = new this.userModel({
+      ...user,
+      birthdate: user.birthDate,
+    });
 
-				if (!userFound) {
-            this._users.push(user);
-            console.log(this._users);
-            return true;
-        }
-        return false;
+    await createdUser.save();
+
+    return true;
+  }
+
+  async getUsers(start?: string): Promise<User[]> {
+    if (!start) {
+      return this.userModel.find().exec();
     }
 
-    getUsers(start: string) {
+    return this.userModel
+      .find({
+        name: { $regex: `^${start}`, $options: 'i' },
+      })
+      .exec();
+  }
 
-			if(!start) {
-				return this._users;
-			}
-	
-			return this._users.filter(u => u.name.toLocaleLowerCase().trim().startsWith(start.toLocaleLowerCase().trim()))
+  async updateUser(userDto: UserDto): Promise<boolean> {
+    const updated = await this.userModel.updateOne(
+      { id: userDto.id },
+      {
+        name: userDto.name,
+        email: userDto.email,
+        birthdate: userDto.birthDate,
+      },
+    );
+
+    if (updated.matchedCount === 0) {
+      await this.createUser(userDto);
     }
 
-    updateUser(user: UserDto) {
+    return true;
+  }
 
-        const userAdded = this.createUser(user);
-
-        if (!userAdded) {
-            const index = this._users.findIndex(u => u.id == user.id);
-            this._users[index] = user;
-        }
-        return true;
-
-    }
-
-    deleteUser(idUser: number) {
-        const index = this._users.findIndex(u => u.id == idUser);
-
-        if (index != -1) {
-            this._users.splice(index, 1);
-            return true;
-        }
-        return false;
-
-    }
-
+  async deleteUser(idUser: number): Promise<boolean> {
+    const deleted = await this.userModel.deleteOne({ id: idUser });
+    return deleted.deletedCount > 0;
+  }
 }
