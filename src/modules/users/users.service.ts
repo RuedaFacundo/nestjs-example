@@ -45,7 +45,7 @@ export class UsersService {
 
   async updateUser(userDto: UserDto): Promise<boolean> {
     const updated = await this.userModel.updateOne(
-      { id: userDto.id },
+      { email: userDto.email },
       {
         name: userDto.name,
         email: userDto.email,
@@ -60,8 +60,8 @@ export class UsersService {
     return true;
   }
 
-  async deleteUser(idUser: number): Promise<boolean> {
-    const deleted = await this.userModel.deleteOne({ id: idUser });
+  async deleteUser(email: string): Promise<boolean> {
+    const deleted = await this.userModel.deleteOne({ email: email });
     return deleted.deletedCount > 0;
   }
 }

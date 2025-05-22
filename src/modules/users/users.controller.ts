@@ -88,17 +88,17 @@ export class UsersController {
     return this.userService.updateUser(user);
   }
 
-  @Delete('/:idUser')
+  @Delete('/:email')
   @ApiParam({
-    name: 'idUser',
-    type: Number,
-    description: 'Id del usuario a borrar',
+    name: 'email',
+    type: 'string',
+    description: 'Email del usuario a borrar',
   })
   @ApiOperation({
     description:
-      'Elimina un usuario en el caso de que exista el id. Devuelve true si se realiza con exito.',
+      'Elimina un usuario en el caso de que exista el email. Devuelve true si se realiza con exito.',
   })
-  deleteUser(@Param('idUser') idUser: number) {
-    return this.userService.deleteUser(idUser);
+  deleteUser(@Param('email') email: string) {
+    return this.userService.deleteUser(email);
   }
 }
