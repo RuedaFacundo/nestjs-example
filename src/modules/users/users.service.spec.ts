@@ -69,7 +69,7 @@ describe('UsersService', () => {
       userModel.updateOne.mockResolvedValue({ matchedCount: 1 });
 
       const result = await service.updateUser(dto as any);
-      expect(result).toBe(true);
+      expect(result).toBe('Usuario actualizado correctamente');
       expect(userModel.updateOne).toHaveBeenCalled();
     });
 
@@ -80,11 +80,13 @@ describe('UsersService', () => {
         birthDate: '1992-01-01',
       };
       userModel.updateOne.mockResolvedValue({ matchedCount: 0 });
-      jest.spyOn(service, 'createUser').mockResolvedValue(true);
+      jest
+        .spyOn(service, 'createUser')
+        .mockResolvedValue('Usuario actualizado correctamente');
 
       const result = await service.updateUser(dto as any);
       expect(service.createUser).toHaveBeenCalledWith(dto);
-      expect(result).toBe(true);
+      expect(result).toBe('Usuario actualizado correctamente');
     });
   });
 
@@ -92,13 +94,13 @@ describe('UsersService', () => {
     it('delete the user and return true', async () => {
       userModel.deleteOne.mockResolvedValue({ deletedCount: 1 });
       const result = await service.deleteUser('facundo@example.com');
-      expect(result).toBe(true);
+      expect(result).toBe('Usuario eliminado correctamente');
     });
 
     it('should return false if user not found', async () => {
       userModel.deleteOne.mockResolvedValue({ deletedCount: 0 });
       const result = await service.deleteUser('facundo@example.com');
-      expect(result).toBe(false);
+      expect(result).toBe('No se pudo eliminar el usuario');
     });
   });
 });

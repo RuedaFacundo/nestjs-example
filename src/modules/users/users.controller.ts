@@ -19,6 +19,7 @@ import { UsersService } from './users.service';
 import { UserDto } from './dto/user-dto';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
+import { ParseDatePipe } from 'src/pipes/parse-date/parse-date.pipe';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/v1/users')
@@ -45,7 +46,11 @@ export class UsersController {
       },
     },
   })
-  createUser(@Body() user: UserDto) {
+  createUser(
+    @Body('birthDate', ParseDatePipe) birthDate: Date,
+    @Body() user: UserDto,
+  ) {
+    user.birthDate = birthDate;
     return this.userService.createUser(user);
   }
 

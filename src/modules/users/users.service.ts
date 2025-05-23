@@ -28,7 +28,7 @@ export class UsersService {
 
     await createdUser.save();
 
-    return true;
+    return 'Usuario creado correctamente';
   }
 
   async getUsers(start?: string): Promise<User[]> {
@@ -43,7 +43,7 @@ export class UsersService {
       .exec();
   }
 
-  async updateUser(userDto: UserDto): Promise<boolean> {
+  async updateUser(userDto: UserDto): Promise<string> {
     const updated = await this.userModel.updateOne(
       { email: userDto.email },
       {
@@ -57,11 +57,13 @@ export class UsersService {
       await this.createUser(userDto);
     }
 
-    return true;
+    return 'Usuario actualizado correctamente';
   }
 
-  async deleteUser(email: string): Promise<boolean> {
+  async deleteUser(email: string): Promise<string> {
     const deleted = await this.userModel.deleteOne({ email: email });
-    return deleted.deletedCount > 0;
+    return deleted.deletedCount > 0
+      ? 'Usuario eliminado correctamente'
+      : 'No se pudo eliminar el usuario';
   }
 }
