@@ -96,3 +96,11 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Postman Collection
+
+To test the APIs, import the Postman collection available in the file:
+
+`postman/postman_collection.json`
+
+This collection includes all the endpoints and example requests needed to test the service.
